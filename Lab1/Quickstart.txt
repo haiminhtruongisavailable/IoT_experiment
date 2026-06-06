@@ -1,0 +1,67 @@
+/*************************************************************
+  ESP8266 Blynk - Button Controls Built-in LED + Switch Value
+ *************************************************************/
+
+#define BLYNK_TEMPLATE_ID           "TMPL6T3AVdGFV"
+#define BLYNK_TEMPLATE_NAME         "Quickstart Template"
+#define BLYNK_AUTH_TOKEN            "FFEOfVeO0JSpw7q5W0O6CAHogAUtdJgf"
+
+#define BLYNK_PRINT Serial
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char ssid[] = "zeus";
+char pass[] = "12345679";
+
+BlynkTimer timer;
+
+// ====================== LED CONTROL ======================
+BLYNK_WRITE(V0)
+{
+  int value = param.asInt();           // Get value from Button (0 = Off, 1 = On)
+
+  // Control physical LED (active LOW on ESP8266)
+  if (value == 1) {
+    digitalWrite(LED_BUILTIN, LOW);    // LED ON
+    Serial.println("LED turned ON");
+  } else {
+    digitalWrite(LED_BUILTIN, HIGH);   // LED OFF
+    Serial.println("LED turned OFF");
+  }
+
+  // Update "Switch Value" display on V1
+  Blynk.virtualWrite(V1, value);
+}
+// =========================================================
+
+BLYNK_CONNECTED()
+{
+  Blynk.setProperty(V3, "offImageUrl", "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations.png");
+  Blynk.setProperty(V3, "onImageUrl",  "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations_pressed.png");
+  Blynk.setProperty(V3, "url", "https://docs.blynk.io/en/getting-started/what-do-i-need-to-blynk/how-quickstart-device-was-made");
+}
+
+void myTimerEvent()
+{
+  Blynk.virtualWrite(V2, millis() / 1000);
+}
+
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println("Blynk ESP8266 starting...");
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);     // Start with LED OFF
+
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+
+  timer.setInterval(1000L, myTimerEvent);
+}
+
+void loop()
+{
+  Blynk.run();
+  timer.run();
+}
