@@ -1,0 +1,19 @@
+int ledpin = 12;     // LED connected to GPIO12
+int button = 16;     // Button connected to GPIO16
+int buttonState = 0;
+
+void setup() {
+  pinMode(ledpin, OUTPUT);
+  pinMode(button, INPUT);           // Change to INPUT_PULLUP if button is between GPIO16 and GND
+}
+
+void loop() {
+  buttonState = digitalRead(button);
+
+  if (buttonState == HIGH) {        // Button pressed
+    digitalWrite(ledpin, LOW);     // Turn LED ON
+  } 
+  else {                            // Button released
+    digitalWrite(ledpin, HIGH);      // Turn LED OFF
+  }
+}

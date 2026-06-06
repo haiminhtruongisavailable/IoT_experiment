@@ -1,0 +1,31 @@
+int ledpin = 12;
+int button = 16;
+
+int switchState = 0;
+int oldSwitchState = 0;
+bool lightsOn = false;           // Using bool is cleaner
+
+void setup() {
+  pinMode(ledpin, OUTPUT);
+  pinMode(button, INPUT_PULLUP);   // ← Changed to INPUT_PULLUP (recommended)
+}
+
+void loop() {
+  switchState = digitalRead(button);
+
+  // Detect when button is pressed (goes from HIGH to LOW)
+  if (switchState != oldSwitchState) {
+    oldSwitchState = switchState;
+
+    if (switchState == LOW) {      // Button pressed (with INPUT_PULLUP)
+      lightsOn = !lightsOn;        // Toggle the state
+    }
+  }
+
+  // Control the LED
+  if (lightsOn) {
+    digitalWrite(ledpin, HIGH);
+  } else {
+    digitalWrite(ledpin, LOW);
+  }
+}
